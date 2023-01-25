@@ -1,0 +1,87 @@
+close all;% close all figures
+
+% LOAD ALEXNET
+
+foldFolder = fullfile('../','FileExchangeEntry/Alexnet Training/5 Folds (10-24-0.0001-LDF0.1-LDRP5)/');
+fold1_alexnet = fullfile(foldFolder, 'ALEXNETcustom6_1_among_5_folds.mat');
+fold2_alexnet = fullfile(foldFolder, 'ALEXNETcustom6_2_among_5_folds.mat');
+fold3_alexnet = fullfile(foldFolder, 'ALEXNETcustom6_3_among_5_folds.mat');
+fold4_alexnet = fullfile(foldFolder, 'ALEXNETcustom6_4_among_5_folds.mat');
+fold5_alexnet = fullfile(foldFolder, 'ALEXNETcustom6_5_among_5_folds.mat');
+
+load('-mat',fold1_alexnet);
+load('-mat',fold2_alexnet);
+load('-mat',fold3_alexnet);
+load('-mat',fold4_alexnet);
+load('-mat',fold5_alexnet);
+
+% LOAD GOOGLENET
+
+foldFolder2 = fullfile('../','FileExchangeEntry/Googlenet Training/5 Folds with HisEq (10-32-0.001-96%)/');
+fold1_googlenet = fullfile(foldFolder2, 'GOOGLENET_custom6_1_among_5_folds.mat');
+fold2_googlenet = fullfile(foldFolder2, 'GOOGLENET_custom6_2_among_5_folds.mat');
+fold3_googlenet = fullfile(foldFolder2, 'GOOGLENET_custom6_3_among_5_folds.mat');
+fold4_googlenet = fullfile(foldFolder2, 'GOOGLENET_custom6_4_among_5_folds.mat');
+fold5_googlenet = fullfile(foldFolder2, 'GOOGLENET_custom6_5_among_5_folds.mat');
+
+load('-mat',fold1_googlenet);
+load('-mat',fold2_googlenet);
+load('-mat',fold3_googlenet);
+load('-mat',fold4_googlenet);
+load('-mat',fold5_googlenet);
+
+% LOAD VGGNET
+
+foldFolder3 = fullfile('../','FileExchangeEntry/Googlenet Training/5 Folds with HisEq (10-32-0.001-96%)/');
+fold1_vggnet = fullfile(foldFolder3, 'GOOGLENET_custom6_1_among_5_folds.mat');
+fold2_vggnet = fullfile(foldFolder3, 'GOOGLENET_custom6_2_among_5_folds.mat');
+fold3_vggnet = fullfile(foldFolder3, 'GOOGLENET_custom6_3_among_5_folds.mat');
+fold4_vggnet = fullfile(foldFolder3, 'GOOGLENET_custom6_4_among_5_folds.mat');
+fold5_vggnet = fullfile(foldFolder3, 'GOOGLENET_custom6_5_among_5_folds.mat');
+
+load('-mat',fold1_vggnet);
+load('-mat',fold2_vggnet);
+load('-mat',fold3_vggnet);
+load('-mat',fold4_vggnet);
+load('-mat',fold5_vggnet);
+
+%LOAD IMAGE
+image = imread(fullfile('sample.png'));
+
+%% ALEXNET INPUT
+image1 = augmentedImageDatastore([227 227],image);
+[predicted_item, scores] = classify(netTransfer, image1);
+item = char(predicted_item);
+prob = num2str(scores*100);
+clear title;
+figure(1);
+imshow(image)
+str = sprintf('Alexnet Predicted: %s \n Probabilties: %s', item, prob);
+title(str);
+
+%%GOOGLENET
+image2 = augmentedImageDatastore([224 224],image);
+[predicted_item2, scores2] = classify(netTransfer_googlenet, image2);
+item2 = char(predicted_item2);
+prob2 = num2str(scores2*100);
+clear title;
+figure(2);
+imshow(image)
+str2 = sprintf('Googlenet Predicted: %s \n Probabilties: %s', item2, prob2);
+title(str2);
+
+
+
+%get highest scores
+high_alex = max(scores);
+high_google = max(scores2);
+
+soft_voting = (high_alex + high_google)/2
+if (soft_voting >= 0.50)
+    soft_ensemble = 1
+else
+    soft_ensemble = 0
+end
+
+    
+

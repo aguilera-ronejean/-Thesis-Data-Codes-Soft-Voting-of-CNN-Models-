@@ -1,0 +1,24 @@
+outputFolder = fullfile('tympanic_membrane_dataset');
+rootFolder = fullfile(outputFolder, 'abnormal');
+fileFolder = fullfile(rootFolder, 'foreignObjectEar');
+S = dir(fullfile(rootFolder,'foreignObjectEar', '*.png'));
+fprintf('Found %d PNG files.\n', length(S));
+hFig = figure;
+hFig.WindowState = 'maximized';
+
+for k = 1 : numel(S)
+	originalFilename = fullfile(fileFolder, S(k).name);
+	[~, baseFileNameNoExt, ~] = fileparts(lower(originalFilename));
+	originalImage = imread(originalFilename);
+	fprintf('\nRead in %s.\n', originalFilename);
+	
+    filename = directory(i).name;
+    rgbImg     = imread(originalFilename);
+    gsImg      = rgb2gray(rgbImg);
+    [~,name,~] = fileparts(originalFilename);
+    gsFilename = sprintf('%s_gs.png', name);
+    imwrite(gsImg,gsFilename);
+    fprintf('    Wrote out %s.\n', originalFilename);
+	
+end
+close(hFig);
